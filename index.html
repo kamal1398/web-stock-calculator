@@ -316,6 +316,11 @@
   }
 </style>
 </head>
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
 <body>
 <div class="page-wrap">
 
