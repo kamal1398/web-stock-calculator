@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حاسبة الأسهم</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a6fd4;
+    --primary-light: #e8f0fb;
+    --primary-mid: #5b9bf5;
+    --accent: #f59e0b;
+    --accent-light: #fef3c7;
+    --bg: #f0f4fc;
+    --bg-2: #ffffff;
+    --bg-3: #f7f9ff;
+    --bg-4: #eef2fb;
+    --border: #d1daf5;
+    --text: #1a2340;
+    --text-dim: #6b7a9e;
+    --green: #059669;
+    --green-bg: #d1fae5;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(26,111,212,0.07) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .header-badge {
+    display: inline-block;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--primary);
+    background: var(--primary-light);
+    border: 1px solid #b8d0f5;
+    padding: 6px 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+
+  h1 span {
+    color: var(--primary);
+  }
+
+  .header-line {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    margin: 20px auto 0;
+    border-radius: 2px;
+  }
+
+  .card {
+    background: var(--bg-2);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    box-shadow: 0 2px 12px rgba(26,111,212,0.06);
+  }
+
+  .card:hover {
+    border-color: var(--primary-mid);
+    box-shadow: 0 6px 24px rgba(26,111,212,0.12);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-bottom: 1.5px solid var(--border);
+    background: linear-gradient(135deg, var(--primary-light), #f0f7ff);
+  }
+
+  .card-num {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(26,111,212,0.3);
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-weight: 400;
+    margin-right: 4px;
+  }
+
+  .card-body {
+    padding: 24px;
+    background: var(--bg-2);
+  }
+
+  .fields-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.3px;
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background: var(--bg-3);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px 10px 42px;
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    direction: ltr;
+    text-align: right;
+  }
+
+  input[type="number"]:focus {
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(26,111,212,0.1);
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .input-unit {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-mid);
+    pointer-events: none;
+  }
+
+  .results-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1.5px dashed var(--border);
+  }
+
+  .result-box {
+    background: var(--bg-4);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .result-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+
+  .result-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    direction: ltr;
+  }
+
+  .result-value.highlight {
+    font-size: 20px;
+    color: var(--primary);
+  }
+
+  .result-value.positive { color: var(--green); }
+  .result-value.negative { color: var(--red); }
+
+  .profit-card {
+    background: var(--bg-4);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s;
+    margin-top: 12px;
+  }
+
+  .profit-card.profit-positive {
+    border-color: #6ee7b7;
+    background: var(--green-bg);
+  }
+
+  .profit-card.profit-negative {
+    border-color: #fca5a5;
+    background: var(--red-bg);
+  }
+
+  .profit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 0;
+    transition: all 0.4s;
+  }
+
+  .profit-card.profit-positive::before { background: linear-gradient(90deg, #059669, #34d399); }
+  .profit-card.profit-negative::before { background: linear-gradient(90deg, #dc2626, #f87171); }
+
+  .profit-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .profit-value {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 900;
+    color: var(--text);
+    direction: ltr;
+    display: inline-block;
+    transition: color 0.4s;
+  }
+
+  .profit-value.positive { color: var(--green); }
+  .profit-value.negative { color: var(--red); }
+
+  .profit-unit {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dim);
+    margin-right: 6px;
+  }
+
+  .profit-pct {
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dim);
+    direction: ltr;
+    transition: color 0.4s;
+  }
+
+  .profit-pct.positive { color: var(--green); }
+  .profit-pct.negative { color: var(--red); }
+
+  .commission-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1.5px dashed var(--border);
+    font-weight: 500;
+  }
+
+  .commission-note strong {
+    color: var(--primary);
+    font-weight: 800;
+  }
+
+  @media (max-width: 600px) {
+    .fields-row { grid-template-columns: 1fr 1fr; }
+    .results-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="header">
+    <div class="header-badge">بنك الأهلي التجاري</div>
+    <h1>حاسبة <span>الأسهم</span></h1>
+    <div class="header-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-num">1</div>
+      <div>
+        <div class="card-title">حاسبة سهم <span class="card-subtitle">#1</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="fields-row">
+        <div class="field">
+          <label>المبلغ المستثمر</label>
+          <div class="input-wrap">
+            <input type="number" id="amount" placeholder="50000" oninput="calculate()" min="0" step="any">
+            <span class="input-unit">ر.س</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>سعر الشراء</label>
+          <div class="input-wrap">
+            <input type="number" id="buy" placeholder="31.55" oninput="calculate()" min="0" step="any">
+            <span class="input-unit">ر.س</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>سعر البيع</label>
+          <div class="input-wrap">
+            <input type="number" id="sell" placeholder="41.00" oninput="calculate()" min="0" step="any">
+            <span class="input-unit">ر.س</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-row">
+        <div class="result-box">
+          <div class="result-label">عدد الأسهم</div>
+          <div class="result-value highlight" id="shares">—</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">عمولة الشراء</div>
+          <div class="result-value" id="buy-comm">—</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">عمولة البيع</div>
+          <div class="result-value" id="sell-comm">—</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">قيمة البيع الإجمالية</div>
+          <div class="result-value" id="sell-total">—</div>
+        </div>
+      </div>
+
+      <div class="profit-card" id="profit-card">
+        <div class="profit-label">الربح أو الخسارة</div>
+        <div>
+          <span class="profit-value" id="profit">أدخل القيم</span>
+          <span class="profit-unit" id="profit-unit" style="display:none">ر.س</span>
+        </div>
+        <div class="profit-pct" id="profit-pct"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="commission-note">
+    نسبة العمولة: <strong>0.155%</strong> من قيمة الصفقة عند الشراء والبيع
+  </div>
+
+</div>
+
+<script>
+const COMMISSION_RATE = 0.00155;
+
+function fmt(n) {
+  if (isNaN(n) || n === null) return '—';
+  return n.toLocaleString('ar-SA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function fmtNoComma(n) {
+  if (isNaN(n) || n === null) return '—';
+  return n.toFixed(2);
+}
+
+function calculate() {
+  const amount = parseFloat(document.getElementById('amount').value);
+  const buyPrice = parseFloat(document.getElementById('buy').value);
+  const sellPrice = parseFloat(document.getElementById('sell').value);
+
+  const sharesEl = document.getElementById('shares');
+  const buyCommEl = document.getElementById('buy-comm');
+  const sellCommEl = document.getElementById('sell-comm');
+  const sellTotalEl = document.getElementById('sell-total');
+  const profitEl = document.getElementById('profit');
+  const profitUnitEl = document.getElementById('profit-unit');
+  const profitPctEl = document.getElementById('profit-pct');
+  const profitCard = document.getElementById('profit-card');
+
+  if (!isNaN(amount) && !isNaN(buyPrice) && buyPrice > 0) {
+    const shares = amount / buyPrice;
+    const buyComm = amount * COMMISSION_RATE;
+    sharesEl.textContent = fmtNoComma(shares);
+    buyCommEl.textContent = fmt(buyComm) + ' ر.س';
+
+    if (!isNaN(sellPrice) && sellPrice > 0) {
+      const sellTotal = shares * sellPrice;
+      const sellComm = amount * COMMISSION_RATE;
+      const profit = sellTotal - sellComm - buyComm - amount;
+      const profitPct = (profit / amount) * 100;
+
+      sellCommEl.textContent = fmt(sellComm) + ' ر.س';
+      sellTotalEl.textContent = fmtNoComma(sellTotal) + ' ر.س';
+
+      profitEl.textContent = fmtNoComma(profit);
+      profitUnitEl.style.display = 'inline';
+
+      profitCard.classList.remove('profit-positive', 'profit-negative');
+      profitEl.classList.remove('positive', 'negative');
+      profitPctEl.classList.remove('positive', 'negative');
+
+      if (profit > 0) {
+        profitCard.classList.add('profit-positive');
+        profitEl.classList.add('positive');
+        profitPctEl.classList.add('positive');
+        profitPctEl.textContent = `▲ ${fmt(profitPct)}%`;
+      } else if (profit < 0) {
+        profitCard.classList.add('profit-negative');
+        profitEl.classList.add('negative');
+        profitPctEl.classList.add('negative');
+        profitPctEl.textContent = `▼ ${fmt(Math.abs(profitPct))}%`;
+      } else {
+        profitPctEl.textContent = '0.00%';
+      }
+    } else {
+      sellCommEl.textContent = '—';
+      sellTotalEl.textContent = '—';
+      profitEl.textContent = 'أدخل سعر البيع';
+      profitEl.className = 'profit-value';
+      profitUnitEl.style.display = 'none';
+      profitPctEl.textContent = '';
+      profitCard.classList.remove('profit-positive', 'profit-negative');
+    }
+  } else {
+    sharesEl.textContent = '—';
+    buyCommEl.textContent = '—';
+    sellCommEl.textContent = '—';
+    sellTotalEl.textContent = '—';
+    profitEl.textContent = 'أدخل القيم';
+    profitEl.className = 'profit-value';
+    profitUnitEl.style.display = 'none';
+    profitPctEl.textContent = '';
+    profitCard.classList.remove('profit-positive', 'profit-negative');
+  }
+}
+</script>
+</body>
+</html>
