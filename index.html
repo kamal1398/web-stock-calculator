@@ -341,7 +341,7 @@ if ("serviceWorker" in navigator) {
       <div class="field">
         <label>المبلغ المستثمر</label>
         <div class="input-wrap">
-          <input type="number" id="amount" oninput="calculate()" min="0" step="any">
+          <input type="number" id="amount" oninput="calculate()" min="0" step="0.01">
           <span class="input-unit">ر.س</span>
         </div>
       </div>
@@ -349,7 +349,7 @@ if ("serviceWorker" in navigator) {
       <div class="field">
         <label>سعر الشراء</label>
         <div class="input-wrap">
-          <input type="number" id="buy" oninput="calculate()" min="0" step="any">
+          <input type="number" id="buy"    oninput="calculate()" min="0" step="0.01">
           <span class="input-unit">ر.س</span>
         </div>
       </div>
@@ -357,7 +357,7 @@ if ("serviceWorker" in navigator) {
       <div class="field">
         <label>سعر البيع</label>
         <div class="input-wrap">
-          <input type="number" id="sell" oninput="calculate()" min="0" step="any">
+          <input type="number" id="sell" oninput="calculate()" min="0" step="0.01">
           <span class="input-unit">ر.س</span>
         </div>
       </div>
