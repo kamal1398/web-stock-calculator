@@ -52,7 +52,6 @@
     padding: 32px 16px 60px;
   }
 
-  /* Header */
   .header {
     text-align: center;
     margin-bottom: 36px;
@@ -88,7 +87,6 @@
     border-radius: 2px;
   }
 
-  /* Card */
   .card {
     background: var(--bg-2);
     border: 1.5px solid var(--border);
@@ -127,7 +125,6 @@
     color: var(--text);
   }
 
-  /* Body & Fields */
   .card-body {
     padding: 24px 20px;
   }
@@ -190,14 +187,12 @@
     border-radius: 7px;
   }
 
-  /* Divider */
   .divider {
     height: 1.5px;
     background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 8px, transparent 8px, transparent 14px);
     margin: 24px 0;
   }
 
-  /* Results */
   .results-col {
     display: flex;
     flex-direction: column;
@@ -232,7 +227,6 @@
     color: var(--primary);
   }
 
-  /* Profit Card */
   .profit-card {
     background: var(--bg-4);
     border: 2px solid var(--border);
@@ -299,7 +293,6 @@
   .profit-pct.positive { color: var(--green); }
   .profit-pct.negative { color: var(--red); }
 
-  /* Commission note */
   .commission-note {
     text-align: center;
     font-size: 13px;
@@ -316,16 +309,11 @@
   }
 </style>
 </head>
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js");
-}
-</script>
 <body>
 <div class="page-wrap">
 
   <div class="header">
-    <div class="header-badge">بنك الأهلي التجاري</div>
+    <div class="header-badge">دراية للوساطة المالية</div>
     <h1>حاسبة <span>الأسهم</span></h1>
     <div class="header-line"></div>
   </div>
@@ -349,7 +337,7 @@ if ("serviceWorker" in navigator) {
       <div class="field">
         <label>سعر الشراء</label>
         <div class="input-wrap">
-          <input type="number" id="buy"    oninput="calculate()" min="0" step="0.01">
+          <input type="number" id="buy" oninput="calculate()" min="0" step="0.01">
           <span class="input-unit">ر.س</span>
         </div>
       </div>
@@ -396,13 +384,13 @@ if ("serviceWorker" in navigator) {
   </div>
 
   <div class="commission-note">
-    نسبة العمولة: <strong>0.155%</strong> من قيمة الصفقة عند الشراء والبيع
+    نسبة العمولة: <strong>0.05%</strong> من قيمة الصفقة عند الشراء والبيع
   </div>
 
 </div>
 
 <script>
-const COMMISSION_RATE = 0.05;
+const COMMISSION_RATE = 0.0005;
 
 function fmt(n) {
   if (isNaN(n) || n === null) return '—';
